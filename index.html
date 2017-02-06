@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>todomvc-react</title>
+	<script src="../../react-15.3.1/build/react.js"></script>
+    <script src="../../react-15.3.1/build/react-dom.js"></script>
+    <script src="../../react-15.3.1/build/browser.min.js"></script>
+    <style type="text/css">
+    	body { 
+    		padding: 50px; background-color: #66CCFF; font-family: sans-serif;
+    	 } 
+
+    	.todoListMain .header input { 
+    		padding: 10px; font-size: 16px; border: 2px solid #FFF; 
+    	} 
+
+
+    	.todoListMain .header button { 
+    		padding: 10px; font-size: 16px; margin: 10px; background-color: #0066FF; color: #FFF; border: 2px solid #0066FF;
+    	 } 
+
+    	 .todoListMain .theList { list-style: none; padding-left: 0; width: 255px; }
+
+.todoListMain .theList li { color: #333; background-color: rgba(255,255,255,.5); padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+
+    	.todoListMain .header button:hover { background-color: #003399; border: 2px solid #003399; cursor: pointer; }
+    </style>
+</head>
+<body>
+		<div id="container"></div>
+	<script type="text/babel">
+		/**
+		 * 列表对象
+		 * @param  {[type]}
+		 * @param  {[type]}
+		 * @param  {[type]}
+		 * @return {[type]}
+		 */
+		var TodoList = React.createClass({
+			// 初始化状态
+			getInitialState:function(){
+				return {
+					items:[]
+				};
+			},
+
+			addItem:function(e){
+				var input = this.refs.task ;
+				var itemArray = this.state.items ;
+				// key:必须是唯一值
+				itemArray.push({
+					text:input.value,
+					key:new Date().getTime() 
+				});
+				// 重新设置items
+				this.setState({
+					items:itemArray
+				});
+				
+				
+
+				// 重置input
+				input.value = '' ;
+				
+				e.preventDefault() ;
+			},
+
+			render:function(){
+				return (
+					<div className='todoListMain'>
+						<div className='header'>
+							<form onSubmit={this.addItem}>
+								<input ref='task' type="text" placeholder="enter task"/>
+								<button type="submit">add</button>
+							</form>
+						</div>
+						<TodoItems entries = {this.state.items }/>
+					</div>
+				);
+			}
+		});
+
+
+		var TodoItems = React.createClass({
+			render:function(){
+				var todoEntries = this.props.entries ; 
+				function createTasks(item){
+					return <li key={item.key}>{item.text}</li>
+				}
+				//遍历得到列表
+				var listItems = todoEntries.map(createTasks) ;
+				return (
+					<ul className='theList'>
+						{listItems}
+					</ul>
+				);
+			}
+		});
+
+
+		ReactDOM.render(
+			<TodoList/>
+			,document.getElementById('container')
+		);
+	</script>
+</body>
+</html>
